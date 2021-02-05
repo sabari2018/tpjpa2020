@@ -1,23 +1,35 @@
 package jpa;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
+
+import Entity.Kanban;
+import Entity.Section;
 
 public class JpaTest {
 
+	private EntityManager manager;
+	
+	public JpaTest(EntityManager manager) {
+		this.manager = manager;
+	}
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 
 		EntityManager manager = EntityManagerHelper.getEntityManager();
+		JpaTest test = new JpaTest(manager);
+		
 		EntityTransaction tx = manager.getTransaction();
 		tx.begin();
 
 
 		try {
-
+			test.createSection();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -29,5 +41,60 @@ public class JpaTest {
 		//		factory.close();
 	}
 
+	private void createSection() {
+		
+		Section section = new Section("en attente");
+		
+		this.manager.persist(section);
+		
+
+	}
+	
+	/*
+	 * public static void main(String[] args) {
+		EntityManagerFactory factory =   
+ 			 Persistence.createEntityManagerFactory("example");
+		EntityManager manager = factory.createEntityManager();
+		JpaTest test = new JpaTest(manager);
+
+		EntityTransaction tx = manager.getTransaction();
+		tx.begin();
+		try {
+			test.createEmployees();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		tx.commit();
+
+		test.listEmployees();
+			
+   	 manager.close();
+		System.out.println(".. done");
+	}
+	
+	**********
+	*private void createEmployees() {
+		int numOfEmployees = manager.createQuery("Select a From Employee a", Employee.class).getResultList().size();
+		if (numOfEmployees == 0) {
+			Department department = new Department("java");
+			manager.persist(department);
+
+			manager.persist(new Employee("Jakab Gipsz",department));
+			manager.persist(new Employee("Captain Nemo",department));
+
+		}
+	}
+
+	******
+	*private void listEmployees() {
+		List<Employee> resultList = manager.createQuery("Select a From Employee a", Employee.class).getResultList();
+		System.out.println("num of employess:" + resultList.size());
+		for (Employee next : resultList) {
+			System.out.println("next employee: " + next);
+		}
+	}
+
+
+	 * */
 
 }
